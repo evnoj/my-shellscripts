@@ -2,7 +2,9 @@
 
 for file in ./*.wav
 do 
-    mv "$file" "${file/  //}"
+    if ["${file:0:2}" -eq '  ']
+        mv "$file" "${file/  //}"
+    fi
 done
 
 trim-silence
