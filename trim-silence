@@ -1,6 +1,6 @@
-for file in ./*.mp3
+for file in ./*.wav
 do
-    ffmpeg -y -i "$file" -af silenceremove=stop_periods=1:detection=peak:stop_threshold=0.0001 "${file%.*}-temp.mp3"
-    ffmpeg -y -i "${file%.*}-temp.mp3" -af "atrim=0.025" "$file"
-    rm "${file%.*}-temp.mp3"
+    ffmpeg -y -i "$file" -af silenceremove=stop_periods=1:detection=peak:stop_threshold=0.0001 "${file%.*}-temp.wav"
+    ffmpeg -y -i "${file%.*}-temp.wav" -af "atrim=0.025" "$file"
+    rm "${file%.*}-temp.wav"
 done
