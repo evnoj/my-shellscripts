@@ -1,4 +1,4 @@
-# processes tracks exported from ableton that have a ' ' prepended to their name
+# processes tracks for rample exported from ableton that have a '  ' prepended to their name
 
 for file in ./*.wav
 do 
