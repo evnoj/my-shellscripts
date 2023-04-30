@@ -8,4 +8,6 @@ do
     fi
 done
 
+rm ' .wav'
+
 trim-silence
