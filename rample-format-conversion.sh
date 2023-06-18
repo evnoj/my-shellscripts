@@ -1,4 +1,22 @@
-#!/usr/bin/env zsh
+!/usr/bin/env zsh
+
+# get parameters. see obsidian:shell commands/get command-line args
+stereo_tracks=''
+
+print_usage() {
+  printf "Usage: Converts all files in the directory to mono 16-bit 44.1 khz .wav files, deleting the pre-converted files.
+  This will catch all files, and remove non-audio files.
+  parameters:
+    -s: Specifies a set of characters, and will not convert to mono files that start with one of these characters, the converted files will be stereo if the original files were stereo."
+}
+
+while getopts 's:' flag; do
+  case "${flag}" in
+    s) stereo_tracks="${OPTARG}" ;;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
 
 # rename the original files to know which ones to delete
 for file in *; do
