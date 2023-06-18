@@ -1,5 +1,3 @@
-!/usr/bin/env zsh
-
 # get parameters. see obsidian:shell commands/get command-line args
 stereo_tracks=''
 
@@ -27,10 +25,11 @@ done
 for file in *; do
     # Create the output filename by removing the 'temp-' prefix and replacing the extension with .wav
     output_file="${file#temp-}"
-    output_file="${file%.*}.wav"
+    output_file="${output_file%.*}.wav"
+    first_char="${output_file:0:1}"
 
     # Convert the file to 16-bit 44.1khz mono .wav, unless the filename starts with a character specified in the 's' parameter, then leave the mono/stereo as is
-    if [[${file:0:1} == *"$stereo_tracks"*]]
+    if [[ "$stereo_tracks" == *"$first_char"* ]]
     then
         ffmpeg -i "$file" -ar 44100 -sample_fmt s16 "$output_file"
     else
@@ -38,5 +37,5 @@ for file in *; do
     fi
 
     # remove the original file
-    rm $file
+    rm "$file"
 done
