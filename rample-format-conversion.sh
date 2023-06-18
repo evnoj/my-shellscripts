@@ -29,8 +29,13 @@ for file in *; do
     output_file="${file#temp-}"
     output_file="${file%.*}.wav"
 
-    # Convert the file to 16-bit 44.1khz mono .wav
-    ffmpeg -i "$file" -ac 1 -ar 44100 -sample_fmt s16 "$output_file"
+    # Convert the file to 16-bit 44.1khz mono .wav, unless the filename starts with a character specified in the 's' parameter, then leave the mono/stereo as is
+    if [[${file:0:1} == *"$stereo_tracks"*]]
+    then
+        ffmpeg -i "$file" -ar 44100 -sample_fmt s16 "$output_file"
+    else
+        ffmpeg -i "$file" -ac 1 -ar 44100 -sample_fmt s16 "$output_file"
+    fi
 
     # remove the original file
     rm $file
