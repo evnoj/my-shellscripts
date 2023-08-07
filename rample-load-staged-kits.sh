@@ -1,1 +1,1 @@
-rsync --progress --stats -r ~/Documents/audio/rample/staged-kits
+rsync --progress --stats -r '~/Documents/audio/rample/staged-kits' '/Volumes/rample-sd'
