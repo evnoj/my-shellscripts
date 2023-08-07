@@ -1,0 +1,1 @@
+rsync --progress --stats -r ~/Documents/audio/rample/staged-kits
