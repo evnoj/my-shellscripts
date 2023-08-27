@@ -1,2 +1,2 @@
-rsync --progress --update --stats -r '/Users/evanjohnson/Documents/audio/rample/staged-kits/' '/Volumes/rample-sd/'
-rsync --progress --update --stats -r '/Users/evanjohnson/Documents/audio/rample/staged-kits/' '/Users/evanjohnson/Documents/audio/rample/running-config/'
+rsync --progress --update --stats -r '/Users/evanjohnson/audio/rample/staged-kits/' '/Volumes/rample-sd/' # copy to sd card
+rsync --progress --update --stats -r '/Users/evanjohnson/audio/rample/staged-kits/' '/Users/evanjohnson/audio/rample/running-config/' # copy to running-config
