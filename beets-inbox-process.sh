@@ -19,8 +19,9 @@ beet import -imq -l "$inboxdir/beet-import.log" "$inboxdir/unzipped/"*
 
 # go through directories and remove any that only contain a cover image (a.k.a. ones that were successfully imported)
 for dir in "$inboxdir/unzipped/"*; do
-    if [[ "$(ls -A1 "$dir")" = "cover."* ]] && # file found is a cover
-    [[ "$(ls -A1 "$dir" | wc -l)" -eq 1 ]] # only one file found
+    dircontents="$(ls -A1 "$dir" | grep -vxF .DS_Store)" # filter .DS_Store
+    if [[ "$dircontents" = "cover."* ]] && # file found is a cover
+    [[ "$(echo "$dircontents" | wc -l)" -eq 1 ]] # only one file found
     then
         trash "$dir"
     fi
