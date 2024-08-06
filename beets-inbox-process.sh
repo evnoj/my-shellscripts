@@ -23,7 +23,7 @@ done
 for dir in "$inboxdir/unzipped/"*; do
     set -- "$dir"/*
     # if only 1 file and its a cover
-    if [[ "$#" == 1 ]] && [[ "$1" == "cover.*" ]] 
+    if [[ "$#" == 1 ]] && [[ $(basename "$1") == cover.* ]]
     then
         trash "$dir"
     fi
