@@ -4,7 +4,7 @@ shopt -s nullglob
 inboxdir=$HOME/tunes/inbox
 
 # pass 'all' to the script to do a full import of everything in the inbox, manually prompting for user actions if unsure, and not skipping anything
-if [ "$1" = "all" ]; then
+if [ "${1:-}" = "all" ]; then
     importflags="-m"
 else
     importflags="-imq"
@@ -19,13 +19,13 @@ for zip in "$inboxdir"/zipped/*.zip; do
     mkdir "$dirpath"
     # unzip "$zip" -d "$dirpath"
     # this properly detects and deals with different character encodings in filenames
-    /usr/local/opt/unzip/bin/unzip -I $(chardetect --minimal <<<"$zip") "$zip" -d "$dirpath"
+    /usr/local/opt/unzip/bin/unzip -I "$(chardetect --minimal <<<"$zip")" "$zip" -d "$dirpath"
     trash "$zip"
 done
 
 # import albums, moving (not copying) successfully imported files
 # use beets installed in my user-utilities venv
-~/.venv/bin/python -m beets import -imq -l "$inboxdir/beet-import.log" "$inboxdir/unzipped/"*
+~/.venv/bin/python -m beets import $importflags -l "$inboxdir/beet-import.log" "$inboxdir/unzipped/"*
 
 # go through directories and remove any that only contain a cover image (a.k.a. ones that were successfully imported)
 for dir in "$inboxdir/unzipped/"*; do
