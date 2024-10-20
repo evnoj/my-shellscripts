@@ -1,0 +1,11 @@
+# written to make directories containing high-res jpgs and raws match the contents of a directory of low-res photos made for faster browsing
+for file in ./*; do
+    if [[ -f "$file" ]]; then
+        filename=$(basename "$file")
+        if [[ ! -f "./low-res/$filename" ]]; then
+            trash "$file"
+            trash "../raws/${filename%.*}.ARW"
+            echo "Deleted: $file"
+        fi
+    fi
+done
