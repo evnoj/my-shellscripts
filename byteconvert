@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Check if argument is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <number_of_bytes>"
+    exit 1
+fi
+
+units=("KB" "MB" "GB" "TB")
+value=$(echo "scale=3; $1 / 1000" | bc -l)  # Initial conversion to KB
+unit_index=0
+
+# Convert to the most appropriate unit
+while [ $(echo "$value >= 1000" | bc -l) -eq 1 ] && [ $unit_index -lt 4 ]; do
+    value=$(echo "scale=3; $value / 1000" | bc -l)
+    unit_index=$((unit_index + 1))
+done
+
+# Remove trailing zeros and decimal point if result is a whole number
+formatted_value=$(printf "%.3f" $value)
+
+echo "$formatted_value ${units[$unit_index]}"
