@@ -6,17 +6,39 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
-units=("KB" "MB" "GB" "TB")
-value=$(echo "scale=3; $1 / 1000" | bc -l)  # Initial conversion to KB
-unit_index=0
+# Check if argument is a valid number
+if ! [[ $1 =~ ^[0-9]+$ ]]; then
+    echo "Error: Please provide a valid positive number"
+    exit 1
+fi
 
-# Convert to the most appropriate unit
-while [ $(echo "$value >= 1000" | bc -l) -eq 1 ] && [ $unit_index -lt 4 ]; do
-    value=$(echo "scale=3; $value / 1000" | bc -l)
-    unit_index=$((unit_index + 1))
-done
+num_bytes=$1
+decimal_units=("KB" "MB" "GB" "TB")
+binary_units=("KiB" "MiB" "GiB" "TiB")
 
-# Remove trailing zeros and decimal point if result is a whole number
-formatted_value=$(printf "%.3f" $value)
+# Function to convert and format value
+convert_value() {
+    local value=$1
+    local divisor=$2
+    local units=("${!3}")  # Reference to array passed as parameter
+    local unit_index=0
 
-echo "$formatted_value ${units[$unit_index]}"
+    # Initial conversion to K-level unit
+    value=$(echo "scale=3; $value / $divisor" | bc -l)
+
+    # Convert to larger units if appropriate
+    while [ $(echo "$value >= $divisor" | bc -l) -eq 1 ] && [ $unit_index -lt 3 ]; do
+        value=$(echo "scale=3; $value / $divisor" | bc -l)
+        unit_index=$((unit_index + 1))
+    done
+
+    # Format to 3 decimal places
+    formatted_value=$(printf "%.3f" $value)
+    echo "$formatted_value ${units[$unit_index]}"
+}
+
+# Convert using decimal (1000) and binary (1024) units
+decimal_result=$(convert_value $num_bytes 1000 decimal_units[@])
+binary_result=$(convert_value $num_bytes 1024 binary_units[@])
+
+echo "$decimal_result / $binary_result"
