@@ -22,13 +22,39 @@ trap 'rm -f "$temp_file"' EXIT
 cat > "$temp_file" << EOF
 <!DOCTYPE html>
 <html>
+<head>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
 <body>
-    <iframe width="690" height="388"
-        src="$url"
-        frameborder="0"
-        allow="encrypted-media"
-        allowfullscreen>
-    </iframe>
+    <div class="video-container">
+        <iframe
+            src="$url"
+            allow="encrypted-media; fullscreen"
+            allowfullscreen>
+        </iframe>
+    </div>
 </body>
 </html>
 EOF
@@ -38,4 +64,3 @@ open "$temp_file"
 
 # Wait a moment to ensure the browser has time to open the file
 sleep 1
-
