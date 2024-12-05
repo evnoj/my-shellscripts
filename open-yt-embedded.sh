@@ -16,7 +16,6 @@ url="https://www.youtube.com/embed/$id"
 temp_file=$(mktemp)
 mv "$temp_file" "$temp_file.html"
 temp_file="$temp_file.html"
-echo "$temp_file"
 trap 'rm -f "$temp_file"' EXIT
 
 cat > "$temp_file" << EOF
