@@ -3,10 +3,17 @@ set -euo pipefail
 shopt -s nullglob
 inboxdir=$HOME/tunes/inbox
 
-# pass 'all' to the script to do a full import of everything in the inbox, manually prompting for user actions if unsure, and not skipping anything
+# pass 'all' to do a full import of everything in the inbox, manually prompting for user actions if unsure, and not skipping anything
 if [ "${1:-}" = "all" ]; then
     importflags="-m"
+# pass 'asis' to import with the metadata they have, don't tag from MusicBrainz
+elif [ "${1:-}" = "asis" ]; then
+    importflags="-mA"
+# 'hybrid' will attempt to tag via musicbrainz, if that fails, it is imported as is
+elif [ "${1:-}" = "hybrid" ]; then
+    importflags="-imq --quiet-fallback asis"
 else
+# if nothing is passed, it tries to tag via MusicBrainz, then skips if it can't
     importflags="-imq"
 fi
 
