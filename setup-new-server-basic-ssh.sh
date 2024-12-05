@@ -6,7 +6,7 @@
 set +o history
 
 echo -n "Enter password for root (should be 32 random chars):" && read -s rootpw
-echo
+echo "root:$rootpw" | chpasswd
 echo -n "Enter username for the non-root user (will be added to sudoers):" && read username
 echo -n "Enter password for $username: " && read -s userpw
 echo
