@@ -20,6 +20,7 @@ if [ -d "$venv_path" ]; then
     echo ".venv already exists in the repository root"
     return 1
 else
+    echo "Running: python3 -m venv --prompt repo \"$venv_path\""
     python3 -m venv --prompt repo "$venv_path"
     echo "Created venv at $venv_path"
     source "$venv_path/bin/activate"
