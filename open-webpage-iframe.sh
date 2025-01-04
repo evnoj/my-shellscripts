@@ -18,7 +18,8 @@ if [ $# -ne 1 ]; then
     echo "Usage: $0 <youtube-url>"
     exit 1
 fi
-url=$1
+# change reddit to old reddit
+url="${1/www.reddit/old.reddit}"
 
 temp_dir=$(mktemp -d)
 trap 'rm -rf "$temp_dir"' EXIT
