@@ -21,6 +21,12 @@ fi
 # change reddit to old reddit
 url="${1/www.reddit/old.reddit}"
 
+if echo "$url" | grep "www\.youtube\.com"; then
+    open-yt-embedded.sh "$url"
+    exit
+fi
+
+
 temp_dir=$(mktemp -d)
 trap 'rm -rf "$temp_dir"' EXIT
 cd "$temp_dir"
@@ -64,5 +70,5 @@ cat > "$temp_file" << EOF
 EOF
 
 open "$temp_file"
-sleep 2
+sleep 3
 kill "$server_pid" > /dev/null 2>&1
