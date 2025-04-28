@@ -49,7 +49,7 @@ options:
         - ex. -H some-norns will connect to some-norns.local
         - if not specified, uses \"norns.local\"
     -n name: connection will go to norns-<name>.local
-        - simply a shorter form of -h if your norns has a certain hostname convention,
+        - simply a shorter form of -H if your norns has a certain hostname convention,
           like \"norns-something\"
         - ex. -n shield will connect to to norns-shield.local
         - if used along with -H, whichever option comes last takes precedence
