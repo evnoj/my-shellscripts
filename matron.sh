@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #######################################
-# evaluate lua code in the maiden REPL on a norns accessible via SSH
-# requires that a base64 decoding function be accessible from that REPL via
-# require('base64').dec(b64_string)
+# evaluate lua code in the matron REPL on a norns accessible via SSH
+# to evaluate a multiline string, requires that a base64 decoding function be
+# accessible from matron via require('base64').dec(b64_string)
 # recommend putting the library at /home/we/norns/lua/lib/base64.lua
 #
 # args:
@@ -11,8 +11,13 @@
 #   2. lua code to evaluate on the target norns
 #######################################
 function eval_on_norns() {
-    code_b64=$(printf "%s" "$2" | base64)
-    printf "load(require('base64').dec('%s'))()\n" "$code_b64" | websocat --one-message --protocol bus.sp.nanomsg.org "ws://$1:5555"
+    if [[ $(echo "$2" | wc -l) -gt 1 ]]
+    then
+        code_b64=$(printf "%s" "$2" | base64)
+        printf "load(require('base64').dec('%s'))()\n" "$code_b64" | websocat --one-message --protocol bus.sp.nanomsg.org "ws://$1:5555"
+    else
+        echo "$2" | websocat --one-message --protocol bus.sp.nanomsg.org "ws://$1:5555"
+    fi
 }
 
 openeditor=
@@ -42,8 +47,7 @@ do
 options:
     -r: enter the maiden REPL after evaluating the provided lua code (either via arg or -e)
         - the REPL is automatically entered if no lua code is provided
-    -e: open \$EDITOR to put the lua code into,
-        to avoid having to escape quotes and special characters in the code
+    -e: open \$EDITOR for entering the code to execute
         - if luacode is provided as an arg, \$EDITOR will be populated with it
     -H hostname: connection will go to <hostname>.local
         - ex. -H some-norns will connect to some-norns.local
@@ -56,15 +60,15 @@ options:
 
 examples:
 
-maiden.sh -r
+matron.sh -r
 
     opens a REPL to norns.local
 
-maiden.sh -H norns-shield 'norns.script.load(\"code/awake/awake.lua\")'
+matron.sh -H norns-shield 'norns.script.load(\"code/awake/awake.lua\")'
 
     loads the awake script on norns-shield.local
 
-maiden.sh -re -n grey
+matron.sh -re -n grey
 
     opens \$EDITOR to input code to evaluatee on norns-grey.local, and then after that code is evaluated, enter the maiden REPL on that norns
 
