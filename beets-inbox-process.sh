@@ -34,13 +34,19 @@ done
 # use beets installed in my user-utilities venv
 ~/.venv/bin/python -m beets import $importflags -l "$inboxdir/beet-import.log" "$inboxdir/unzipped/"*
 
-# go through directories and remove any that only contain a cover image (a.k.a. ones that were successfully imported)
+# go through directories and remove successfully imported directories (albums). These are:
+# - any that only contain a cover image
+# - any that are empty
+# - consider: any that have no audio files? Some albums come with extra images or PDFs, unsure if want to handle separately
 for dir in "$inboxdir/unzipped/"*; do
     set -- "$dir"/*
     # if only 1 file and its a cover
     if [[ "$#" == 1 ]] && [[ $(basename "$1") == cover.* ]]
     then
         trash "$dir"
+    elif [[ "$#" == 0 ]]
+    then
+        rmdir "$dir"
     fi
     
     # dircontents="$(ls -A1 "$dir" | grep -vxF .DS_Store)" # filter .DS_Store
