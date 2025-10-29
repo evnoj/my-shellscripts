@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# old approach of simply opening an HTML file stopped working, seems youtube starting blocking embeds in local files
+# so I'm serving it over http from a local python http.server
+# if throwing errors, check for running process with `ps -ef | rg "Python"`
+# kill with `pkill -f "Python -m http.server"`
+# check what's using the port with `lsof -i :8765`
+
 # Check if a URL was provided
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <youtube-url>"
@@ -12,13 +18,11 @@ id="${url#*v=}"      # Remove everything before "v="
 id="${id%%&*}"       # Remove everything after "&" if present
 url="https://www.youtube.com/embed/$id"
 
-# Create a temporary file
-temp_file=$(mktemp)
-mv "$temp_file" "$temp_file.html"
-temp_file="$temp_file.html"
-trap 'rm -f "$temp_file"' EXIT
+# Create a temporary directory
+temp_dir=$(mktemp -d)
+trap 'rm -rf "$temp_dir"' EXIT
 
-cat > "$temp_file" << EOF
+cat > "$temp_dir/index.html" << EOF
 <!DOCTYPE html>
 <html>
 <head>
@@ -50,7 +54,7 @@ cat > "$temp_file" << EOF
     <div class="video-container">
         <iframe
             src="$url"
-            allow="encrypted-media; fullscreen"
+            allow="autoplay; encrypted-media; fullscreen"
             allowfullscreen>
         </iframe>
     </div>
@@ -58,8 +62,20 @@ cat > "$temp_file" << EOF
 </html>
 EOF
 
-# open the html file in the default browser
-open "$temp_file"
+# Start a simple HTTP server in the background
+cd "$temp_dir"
+python3 -m http.server 8765 &
+server_pid=$!
 
-# Wait a moment to ensure the browser has time to open the file
+# Wait a moment for server to start
 sleep 1
+
+# Open the page in the default browser
+open "http://localhost:8765/index.html"
+
+# echo "Press Enter to stop the server and exit..."
+# read
+
+sleep 2
+# Kill the server
+kill $server_pid
